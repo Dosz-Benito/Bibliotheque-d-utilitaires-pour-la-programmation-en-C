@@ -17,10 +17,9 @@ int main(int argc, const char **argv)
     Liste * liste = creer_liste();
     printf("Une nouvelle liste de %d element est créée\n", liste->taille);
 
-    // Suppression manuelle de la liste car la fonction approppriée est actuellement inexistante
+    // Suppression de la liste
     printf("On supprime la liste...\n");
-    free(liste);
-    liste = NULL;
+    liste = supprimer_liste(liste);
 
     if (liste == NULL)
         printf("La suppression de la liste s'est bien passée");

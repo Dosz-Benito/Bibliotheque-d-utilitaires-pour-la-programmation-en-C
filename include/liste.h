@@ -40,6 +40,14 @@ typedef struct
  */
 Liste *creer_liste(void);
 
+/**
+ * @brief Libère toute la mémoire occupée et mets la liste à NULL.
+ *
+ * @param liste La liste à supprimer
+ * @return Un pointeur nul
+ */
+Liste *supprimer_liste(Liste *liste);
+
 /* Fonctions */
 Liste *creer_liste(void)
 {
@@ -52,6 +60,24 @@ Liste *creer_liste(void)
     liste->premier = NULL;
     liste->dernier = NULL;
     liste->taille = 0;
+    return liste;
+}
+
+Liste *supprimer_liste(Liste *liste)
+{
+    if (liste == NULL)
+        return NULL;
+    ElementListe *element_actuel = liste->dernier;
+    ElementListe *element_precedent = NULL;
+    while (element_actuel != NULL)
+    {
+        element_precedent = NULL;
+        element_precedent = element_actuel->precedent;
+        free(element_actuel);
+        element_actuel = element_precedent;
+    }
+    free(liste);
+    liste = NULL;
     return liste;
 }
 #endif
