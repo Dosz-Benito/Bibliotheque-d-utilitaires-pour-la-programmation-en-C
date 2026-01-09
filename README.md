@@ -22,7 +22,7 @@ Ce projet n'a pas vocation à remplacer la libc, mais à accompagner l'apprentis
 ```
 .
 ├── include/        # Fichiers headers contenant les utilitaires
-├── src/            # Exemples d'utilisation de chaque utilitaire
+├── exemples/       # Exemples d'utilisation de chaque utilitaire
 ├── README.md       # Documentation du projet
 ```
 
@@ -40,7 +40,7 @@ Exemple simple avec GCC :
 
 ```bash
 git clone https://github.com/Dosz-Benito/Bibliotheque-d-utilitaires-pour-la-programmation-en-C.git
-cd Bibliotheque-d-utilitaires-pour-la-programmation-en-C
+cd Bibliotheque-d-utilitaires-pour-la-programmation-en-C/exemples
 ```
 
 Pour le développement, une configuration VS Code avec compilation stricte est utilisée.
