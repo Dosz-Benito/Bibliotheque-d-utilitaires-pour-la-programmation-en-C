@@ -4,7 +4,7 @@
  * @brief Ce fichier offre une implémentation complète d'une liste chaînée
  d'objets génériques en C selon le modèle FILO. Il inclut toutes les fonctions de base pour manipuler
  aisément n'importe quel objet dans une liste chaînée. Les fonctionnalités
- exhaustives incluent la création, l'ajout, la suppression, la recherche,
+ exhaustives incluent la création, l'ajout, le vidage, la suppression, la recherche,
  l'affichage, la fusion, la duplication, Chaque fonction est soigneusement
  conçue pour garantir une gestion efficace de la mémoire et des performances
  optimales. Ce fichier est idéal pour les développeurs cherchant à intégrer sans
@@ -41,11 +41,21 @@ typedef struct
 Liste *creer_liste(void);
 
 /**
- * @brief Libère toute la mémoire occupée et mets la liste à NULL.
+ * @brief Libère toute la mémoire occupée par les éléments de la liste.
+ * Cette fonction libère uniquement la mémoire des éléments de la liste,
+ * la mémoire utilisée par la liste elle-même doit être libérée séparément.
  *
- * @param liste La liste à supprimer
+ * @param liste La liste à vider
  * @return La liste qui est maintenant un pointeur nul
  */
-Liste *supprimer_liste(Liste *liste);
+Liste *vider_liste(Liste *liste);
 
+/**
+ * @brief Ajoute un nouvel élément à la fin de la liste.
+ *
+ * @param liste La liste à laquelle ajouter l'élément
+ * @param element L'élément à ajouter
+ * @return true si l'ajout a réussi, false sinon
+ */
+bool ajouter_element(Liste *liste, void *element);
 #endif

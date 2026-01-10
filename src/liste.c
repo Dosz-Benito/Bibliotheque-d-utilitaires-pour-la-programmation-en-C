@@ -22,7 +22,7 @@ Liste *creer_liste(void)
     return liste;
 }
 
-Liste *supprimer_liste(Liste *liste)
+Liste *vider_liste(Liste *liste)
 {
     if (liste == NULL)
         return NULL;
@@ -30,12 +30,41 @@ Liste *supprimer_liste(Liste *liste)
     ElementListe *element_precedent = NULL;
     while (element_actuel != NULL)
     {
-        element_precedent = NULL;
         element_precedent = element_actuel->precedent;
         free(element_actuel);
         element_actuel = element_precedent;
     }
-    free(liste);
-    liste = NULL;
+
+    liste->premier = NULL;
+    liste->dernier = NULL;
+    liste->taille = 0;
     return liste;
+}
+
+bool ajouter_element(Liste *liste, void *element)
+{
+    ElementListe *element_liste = malloc(sizeof(ElementListe));
+
+    if (element_liste == NULL)
+    {
+        perror("Erreur d'allocation de mémoire");
+        return false;
+    }
+
+    // On configure element_liste
+    element_liste->precedent = element_liste->suivant = NULL;
+    element_liste->valeur = element;
+
+    // On lie le nouvel élément à la liste
+    if (liste->taille == 0)
+    {
+        liste->premier = liste->dernier = element_liste;
+    }
+    else
+    {
+        element_liste->precedent = liste->dernier;
+        liste->dernier = element_liste;
+    }
+    liste->taille += 1;
+    return true;
 }
