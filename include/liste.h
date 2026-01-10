@@ -2,7 +2,7 @@
  * @file liste.h
  * @author do SANTOS ZOUNON Bénito K. (dosantosbenito81@gmail.com)
  * @brief Ce fichier offre une implémentation complète d'une liste chaînée
- d'objets génériques en C. Il inclut toutes les fonctions de base pour manipuler
+ d'objets génériques en C selon le modèle FILO. Il inclut toutes les fonctions de base pour manipuler
  aisément n'importe quel objet dans une liste chaînée. Les fonctionnalités
  exhaustives incluent la création, l'ajout, la suppression, la recherche,
  l'affichage, la fusion, la duplication, Chaque fonction est soigneusement
@@ -44,40 +44,8 @@ Liste *creer_liste(void);
  * @brief Libère toute la mémoire occupée et mets la liste à NULL.
  *
  * @param liste La liste à supprimer
- * @return Un pointeur nul
+ * @return La liste qui est maintenant un pointeur nul
  */
 Liste *supprimer_liste(Liste *liste);
 
-/* Fonctions */
-Liste *creer_liste(void)
-{
-    Liste *liste = malloc(sizeof(Liste));
-    if (liste == NULL)
-    {
-        perror("Erreur d'allocation de mémoire");
-        return NULL;
-    }
-    liste->premier = NULL;
-    liste->dernier = NULL;
-    liste->taille = 0;
-    return liste;
-}
-
-Liste *supprimer_liste(Liste *liste)
-{
-    if (liste == NULL)
-        return NULL;
-    ElementListe *element_actuel = liste->dernier;
-    ElementListe *element_precedent = NULL;
-    while (element_actuel != NULL)
-    {
-        element_precedent = NULL;
-        element_precedent = element_actuel->precedent;
-        free(element_actuel);
-        element_actuel = element_precedent;
-    }
-    free(liste);
-    liste = NULL;
-    return liste;
-}
 #endif
