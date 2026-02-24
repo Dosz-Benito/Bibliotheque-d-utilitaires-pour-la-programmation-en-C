@@ -91,6 +91,7 @@ int supprimer_element_par_pointeur(Liste *liste, void *element)
                 element_actuel->suivant->precedent = element_actuel->precedent;
 
             liste->taille -= 1;
+            free(element_actuel);
             return 0;
         }
         element_actuel = element_actuel->suivant;
@@ -106,27 +107,23 @@ int supprimer_element_par_index(Liste *liste, int index)
     if (index < 0 || index >= liste->taille)
         return 1;
 
-    if (index == 0)
-    {
-        liste->premier = liste->premier->suivant;
-        liste->taille -= 1;
-        return 0;
-    }
-    if (index == liste->taille - 1)
-    {
-        liste->dernier = liste->dernier->precedent;
-        liste->taille -= 1;
-        return 0;
-    }
-
+    /* Trouver l'élément à l'index demandé */
     ElementListe *element_actuel = liste->premier;
-
     for (int i = 0; i < index; i++)
         element_actuel = element_actuel->suivant;
 
-    element_actuel->precedent->suivant = element_actuel->suivant;
-    liste->taille -= 1;
+    /* Détacher l'élément en mettant à jour les voisins */
+    if (element_actuel->precedent)
+        element_actuel->precedent->suivant = element_actuel->suivant;
+    else
+        liste->premier = element_actuel->suivant;
 
+    if (element_actuel->suivant)
+        element_actuel->suivant->precedent = element_actuel->precedent;
+    else
+        liste->dernier = element_actuel->precedent;
+
+    liste->taille -= 1;
     free(element_actuel);
     return 0;
 }

@@ -13,11 +13,17 @@ int main(void)
     Liste *liste = creer_liste();
     if (!liste) return 1;
 
-    /* Ajout de 5 entiers */
+    /* Ajout de 5 entiers dans un tableau alloué (adresses stables) */
+    int *vals = malloc(5 * sizeof *vals);
+    if (vals == NULL)
+    {
+        free(liste);
+        return 1;
+    }
     for (int i = 0; i < 5; ++i)
     {
-        int a = i + 1;
-        ajouter_element(liste, &a);
+        vals[i] = i + 1;
+        ajouter_element(liste, &vals[i]);
     }
 
     printf("Taille avant suppression=%d (attendu 5)\n", liste->taille);
@@ -44,6 +50,8 @@ int main(void)
 
     liste = vider_liste(liste);
     free(liste);
+    /* Les valeurs étaient dans `vals` : libération maintenant */
+    free(vals);
     printf("Fin de la démonstration de supprimer_element_par_index().\n");
     return 0;
 }
