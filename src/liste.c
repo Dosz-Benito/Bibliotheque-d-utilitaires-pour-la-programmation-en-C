@@ -13,7 +13,7 @@ Liste *creer_liste(void)
     Liste *liste = malloc(sizeof(Liste));
     if (liste == NULL)
     {
-        perror("Erreur d'allocation de mémoire");
+        perror("Erreur d'allocation de mémoire lors de la création de la liste");
         return NULL;
     }
     liste->premier = NULL;
@@ -96,4 +96,37 @@ int supprimer_element_par_pointeur(Liste *liste, void *element)
         element_actuel = element_actuel->suivant;
     }
     return 1;
+}
+
+int supprimer_element_par_index(Liste *liste, int index)
+{
+    if (liste == NULL)
+        return -1;
+
+    if (index < 0 || index >= liste->taille)
+        return 1;
+
+    if (index == 0)
+    {
+        liste->premier = liste->premier->suivant;
+        liste->taille -= 1;
+        return 0;
+    }
+    if (index == liste->taille - 1)
+    {
+        liste->dernier = liste->dernier->precedent;
+        liste->taille -= 1;
+        return 0;
+    }
+
+    ElementListe *element_actuel = liste->premier;
+
+    for (int i = 0; i < index; i++)
+        element_actuel = element_actuel->suivant;
+
+    element_actuel->precedent->suivant = element_actuel->suivant;
+    liste->taille -= 1;
+
+    free(element_actuel);
+    return 0;
 }

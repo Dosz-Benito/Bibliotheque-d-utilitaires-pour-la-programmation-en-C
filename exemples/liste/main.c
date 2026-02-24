@@ -116,6 +116,26 @@ int main(void)
     supprimer_element_par_pointeur(liste, NULL);
     printf("La liste a maintenant %d élément%s.\n", liste->taille, liste->taille > 1 ? "s" : "");
 
+    /* Démonstration de la suppression par index */
+    if (liste->taille > 0)
+    {
+        int index_a_supprimer = 0; // supprimer le premier élément (index 0)
+        printf("Suppression de l'élément à l'index %d...\n", index_a_supprimer);
+        switch (supprimer_element_par_index(liste, index_a_supprimer))
+        {
+        case 0:
+            printf("L'élément à l'index %d a été supprimé avec succès.\n", index_a_supprimer);
+            break;
+        case 1:
+            printf("Index %d invalide ou liste nulle.\n", index_a_supprimer);
+            break;
+        case -1:
+            printf("Erreur lors de la suppression par index.\n");
+            break;
+        }
+        printf("La liste a maintenant %d élément%s après suppression par index.\n", liste->taille, liste->taille > 1 ? "s" : "");
+    }
+
     // Vidage de la liste et libération de la mémoire
     printf("On vide la liste...\n");
     liste = vider_liste(liste);
