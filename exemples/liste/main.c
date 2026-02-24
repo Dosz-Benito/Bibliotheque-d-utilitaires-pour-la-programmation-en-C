@@ -79,17 +79,29 @@ int main(void)
     ajouter_element(liste, "Une chaîne de caractères");
     float *pi = malloc(sizeof(float));
     // Les erreurs ne sont pas gérées ici pour préserver la simplicité de l'exemple
-    if (pi != NULL)
+    if (pi == NULL)
     {
-        *pi = 3.1415f;
-        ajouter_element(liste, pi);
+        printf("Erreur d'allocation de mémoire pour le nombre pi: %s", strerror(errno));
+        // Nettoyage de la liste avant de quitter
+        liste = vider_liste(liste);
+        free(liste);
+        liste = NULL;
+        return EXIT_FAILURE;
     }
+    *pi = 3.1415f;
+    ajouter_element(liste, pi);
     char *caractere = malloc(sizeof(char));
-    if (caractere != NULL)
+    if (caractere == NULL)
     {
+        printf("Erreur d'allocation de mémoire pour le caractère: %s", strerror(errno));
+        // Nettoyage de la liste avant de quitter
+        liste = vider_liste(liste);
+        free(liste);
+        liste = NULL;
+        return EXIT_FAILURE;
+    }
         *caractere = 'A';
         ajouter_element(liste, caractere);
-    }
 
     // Affichage de la taille de la liste
     printf("La liste a %d élément%s.\n", liste->taille, liste->taille > 1 ? "s" : "");
@@ -150,6 +162,9 @@ int main(void)
     else
         printf("Le vidage de la liste s'est mal passé\n");
 
+    // Libération de la mémoire
+    free(pi);
+    free(caractere);
     // Libération de la variable liste elle-même
     free(liste);
     liste = NULL;

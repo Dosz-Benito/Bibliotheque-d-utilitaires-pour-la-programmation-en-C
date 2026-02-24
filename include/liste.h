@@ -70,7 +70,7 @@ int supprimer_element_par_pointeur(Liste *liste, void *element);
 
 /**
  * @brief Supprime l'élément à l'index spécifié de la liste. L'index est basé sur zéro, c'est-à-dire que le premier élément de la liste a un index de 0, le deuxième élément a un index de 1, et ainsi de suite. Si l'index est invalide (par exemple, négatif ou supérieur ou égal à la taille de la liste), la fonction retourne une erreur.
- * 
+ *
  *
  * @param liste La liste de laquelle supprimer l'élément
  * @param index L'index de l'élément à supprimer
