@@ -58,4 +58,13 @@ Liste *vider_liste(Liste *liste);
  * @return true si l'ajout a réussi, false sinon
  */
 bool ajouter_element(Liste *liste, void *element);
+
+/**
+ * @brief Trouve le premier élément de la liste qui pointe vers la même adresse qui l'élément fourni et le supprime de la liste.
+ *
+ * @param liste La liste de laquelle supprimer l'élément
+ * @param element L'élément à supprimer
+ * @return 0 si la suppression a réussi, 1 si l'élément est introuvable, -1 si la liste est un pointeur nul
+ */
+int supprimer_element_par_pointeur(Liste *liste, void *element);
 #endif

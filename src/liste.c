@@ -63,8 +63,37 @@ bool ajouter_element(Liste *liste, void *element)
     else
     {
         element_liste->precedent = liste->dernier;
+        liste->dernier->suivant = element_liste;
         liste->dernier = element_liste;
     }
     liste->taille += 1;
     return true;
+}
+
+int supprimer_element_par_pointeur(Liste *liste, void *element)
+{
+    if (liste == NULL)
+        return -1;
+
+    ElementListe *element_actuel = liste->premier;
+    while (element_actuel != NULL)
+    {
+        if (element_actuel->valeur == element)
+        {
+            if (element_actuel->precedent == NULL)
+                liste->premier = element_actuel->suivant;
+            else
+                element_actuel->precedent->suivant = element_actuel->suivant;
+
+            if (element_actuel->suivant == NULL)
+                liste->dernier = element_actuel->precedent;
+            else
+                element_actuel->suivant->precedent = element_actuel->precedent;
+
+            liste->taille -= 1;
+            return 0;
+        }
+        element_actuel = element_actuel->suivant;
+    }
+    return 1;
 }

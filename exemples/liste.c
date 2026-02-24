@@ -50,7 +50,7 @@ int main(void)
         int *valeur = malloc(sizeof(int));
         if (valeur == NULL)
         {
-            printf("Erreur d'allocation de mémoire pour l'élément %d: %s", i, strerror(errno));
+            printf("Erreur d'allocation de mémoire pour le nombre %d: %s", i, strerror(errno));
             // Nettoyage de la liste avant de quitter
             liste = vider_liste(liste);
             free(liste);
@@ -62,7 +62,7 @@ int main(void)
         // Ajout de l'élément à la liste
         if (!ajouter_element(liste, valeur))
         {
-            printf("Erreur lors de l'ajout de l'élément %d à la liste: %s", i, strerror(errno));
+            printf("Erreur lors de l'ajout du nombre %d à la liste: %s", i, strerror(errno));
             free(valeur);
             valeur = NULL;
 
@@ -77,21 +77,44 @@ int main(void)
     printf("On ajoute quelques autres types d'éléments (NULL, char, char*, float) pour démontrer la nature générique de la liste\n");
     ajouter_element(liste, NULL);
     ajouter_element(liste, "Une chaîne de caractères");
-    float * pi = malloc(sizeof(float));
+    float *pi = malloc(sizeof(float));
     // Les erreurs ne sont pas gérées ici pour préserver la simplicité de l'exemple
     if (pi != NULL)
     {
         *pi = 3.1415f;
         ajouter_element(liste, pi);
     }
-    char * caractere = malloc(sizeof(char));
+    char *caractere = malloc(sizeof(char));
     if (caractere != NULL)
     {
         *caractere = 'A';
         ajouter_element(liste, caractere);
     }
+
     // Affichage de la taille de la liste
     printf("La liste a %d élément%s.\n", liste->taille, liste->taille > 1 ? "s" : "");
+
+    // On supprime un élément spécifique (par pointeur)
+    // On supprime correctement le nombre pi de la liste
+    printf("On supprime le nombre pi (%f) de la liste.\n", *pi);
+    switch (supprimer_element_par_pointeur(liste, pi))
+    {
+    case 0:
+        printf("L'élément %f a été supprimé avec succès.\n", *pi);
+        break;
+    case 1:
+        printf("L'élément %f est introuvable dans la liste.\n", *pi);
+        break;
+    case -1:
+        printf("La liste est un pointeur nul.\n");
+        break;
+    }
+
+    printf("On supprime également NULL et le caractère '%c' de la liste.\n", *caractere);
+    // Absence de gestion des erreurs pour préserver la simplicité de l'exemple
+    supprimer_element_par_pointeur(liste, caractere);
+    supprimer_element_par_pointeur(liste, NULL);
+    printf("La liste a maintenant %d élément%s.\n", liste->taille, liste->taille > 1 ? "s" : "");
 
     // Vidage de la liste et libération de la mémoire
     printf("On vide la liste...\n");
@@ -103,9 +126,9 @@ int main(void)
     // - dernier = NULL (aucun élément à la fin)
     // - taille = 0 (la taille de la liste est remise à zéro)
     if (liste->premier == NULL && liste->dernier == NULL && liste->taille == 0)
-        printf("Le vidage de la liste s'est bien passée\n");
+        printf("Le vidage de la liste s'est bien passé\n");
     else
-        printf("Le vidage de la liste s'est mal passée\n");
+        printf("Le vidage de la liste s'est mal passé\n");
 
     // Libération de la variable liste elle-même
     free(liste);
