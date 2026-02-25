@@ -1,3 +1,35 @@
+<#
+.SYNOPSIS
+    Compile et exécute un fichier exemple du projet.
+
+.DESCRIPTION
+    La fonction Executer-Exemple permet de compiler et d'exécuter les fichiers sources
+    d'exemples situés dans le répertoire exemples/<projet>. Elle utilise gcc pour la
+    compilation et génère l'exécutable dans le répertoire bin/<projet>.
+
+.PARAMETER Projet
+    Nom du projet/dossier dans le répertoire exemples. Ce paramètre est obligatoire.
+
+.PARAMETER Fonction
+    Nom de la fonction ou du fichier exemple à exécuter. Si non spécifié, utilise main.c.
+    Si égal à "*", exécute tous les fichiers exemple_*.c du projet.
+
+.EXAMPLE
+    Executer-Exemple -Projet "liste"
+    Exécute le fichier exemples/liste/main.c
+
+.EXAMPLE
+    Executer-Exemple -Projet "liste" -Fonction "ajouter_element"
+    Exécute le fichier exemples/liste/exemple_ajouter_element.c
+
+.EXAMPLE
+    Executer-Exemple -Projet "liste" -Fonction "*"
+    Exécute tous les fichiers exemples/liste/exemple_*.c
+
+.NOTES
+    Les fichiers sources doivent se trouver dans le répertoire src/ pour être inclus
+    lors de la compilation. Les exécutables sont générés dans bin/<projet>/.
+#>
 function Executer-Exemple {
     [CmdletBinding()]
     Param(

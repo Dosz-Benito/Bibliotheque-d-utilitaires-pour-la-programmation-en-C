@@ -126,6 +126,8 @@ int supprimer_element_par_index(Liste *liste, int index)
     liste->taille -= 1;
     free(element_actuel);
     return 0;
+}
+
 int rechercher_index_par_adresse(Liste *liste, void *element)
 {
     if (liste == NULL) return -2;
