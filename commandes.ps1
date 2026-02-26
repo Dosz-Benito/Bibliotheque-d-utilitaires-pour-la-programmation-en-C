@@ -11,20 +11,22 @@
     Nom du projet/dossier dans le répertoire exemples. Ce paramètre est obligatoire.
 
 .PARAMETER Fonction
-    Nom de la fonction ou du fichier exemple à exécuter. Si non spécifié, utilise main.c.
-    Si égal à "*", exécute tous les fichiers exemple_*.c du projet.
+   Nom logique de l'exemple à exécuter (sans le préfixe \"exemple_\").
+   - Si non spécifié : exécute tous les fichiers exemple_*.c du projet.
+   - Si égal à \"*\"   : exécute tous les fichiers exemple_*.c du projet.
+   - Sinon           : exécute exemples/<projet>/exemple_<Fonction>.c
 
 .EXAMPLE
-    Executer-Exemple -Projet "liste"
-    Exécute le fichier exemples/liste/main.c
-
+   Executer-Exemple -Projet "liste"
+   Exécute tous les fichiers exemples/liste/exemple_*.c
+ 
 .EXAMPLE
-    Executer-Exemple -Projet "liste" -Fonction "ajouter_element"
-    Exécute le fichier exemples/liste/exemple_ajouter_element.c
-
+   Executer-Exemple -Projet "liste" -Fonction "liste_ajout"
+   Exécute le fichier exemples/liste/exemple_liste_ajout.c
+ 
 .EXAMPLE
-    Executer-Exemple -Projet "liste" -Fonction "*"
-    Exécute tous les fichiers exemples/liste/exemple_*.c
+   Executer-Exemple -Projet "liste" -Fonction "*"
+   Exécute tous les fichiers exemples/liste/exemple_*.c
 
 .NOTES
     Les fichiers sources doivent se trouver dans le répertoire src/ pour être inclus
@@ -37,33 +39,56 @@ function Executer-Exemple {
         [Parameter(Mandatory = $false)] [string] $Fonction
     )
 
-    # Utiliser main.c par défaut si Fonction n'est pas spécifiée
-    if ([string]::IsNullOrEmpty($Fonction)) {
-        $fichierSource = Join-Path "exemples/$Projet" "main.c"
+    $repertoireExemples = Join-Path "exemples" $Projet
+
+    if (-not (Test-Path $repertoireExemples)) {
+        Write-Host "Répertoire d'exemples introuvable : $repertoireExemples" -ForegroundColor Red
+        return 2
+    }
+
+    # Récupération des fichiers sources d'exemple à compiler/exécuter
+    if ([string]::IsNullOrEmpty($Fonction) -or $Fonction -eq "*") {
+        # Tous les fichiers exemple_*.c du projet
+        $fichiersExemples = Get-ChildItem -Path $repertoireExemples -Filter "exemple_*.c" -File |
+                            Sort-Object Name
+        if (-not $fichiersExemples) {
+            Write-Host "Aucun fichier exemple_*.c trouvé dans $repertoireExemples" -ForegroundColor Yellow
+            return 3
+        }
     }
     else {
-        $fichierSource = Join-Path "exemples/$Projet" "exemple_$Fonction.c"
+        # Un seul fichier spécifique : exemples/<projet>/exemple_<Fonction>.c
+        $fichierUnique = Join-Path $repertoireExemples ("exemple_{0}.c" -f $Fonction)
+        if (-not (Test-Path $fichierUnique)) {
+            Write-Host "Fichier source introuvable : $fichierUnique" -ForegroundColor Red
+            return 2
+        }
+        $fichiersExemples = ,(Get-Item $fichierUnique)
     }
 
     $repertoireSortie = Join-Path "bin" $Projet
     New-Item -ItemType Directory -Force -Path $repertoireSortie | Out-Null
-    $nomFichier = [System.IO.Path]::GetFileNameWithoutExtension((Split-Path $fichierSource -Leaf))
-    $executable = Join-Path $repertoireSortie "$nomFichier.exe"
-
-    if (-not (Test-Path $fichierSource)) {
-        Write-Host "Fichier source introuvable : $fichierSource" -ForegroundColor Red
-        return 2
-    }
 
     $fichiersSrc = Get-ChildItem -Path src -Filter *.c -File | ForEach-Object { $_.FullName }
-
     $gcc = "gcc"
-    $argumentsGcc = @("-std=c11", "-Wall", "-Wextra", "-Iinclude", $fichierSource) + $fichiersSrc + @("-o", $executable)
 
-    & $gcc @argumentsGcc 2>&1
-    $codeRetour = $LASTEXITCODE
+    foreach ($fichierSourceItem in $fichiersExemples) {
+        $fichierSource = $fichierSourceItem.FullName
+        $nomFichier = [System.IO.Path]::GetFileNameWithoutExtension($fichierSourceItem.Name)
+        $executable = Join-Path $repertoireSortie ("{0}.exe" -f $nomFichier)
 
-    if ($codeRetour -eq 0) {
+        Write-Host "Compilation de l'exemple : $($fichierSourceItem.Name)" -ForegroundColor Cyan
+        $argumentsGcc = @("-std=c11", "-Wall", "-Wextra", "-Iinclude", $fichierSource) + $fichiersSrc + @("-o", $executable)
+
+        & $gcc @argumentsGcc 2>&1
+        $codeRetour = $LASTEXITCODE
+
+        if ($codeRetour -ne 0) {
+            Write-Host "Échec de la compilation pour $($fichierSourceItem.Name) (code=$codeRetour)" -ForegroundColor Red
+            continue
+        }
+
+        Write-Host "Exécution de $($executable)..." -ForegroundColor Green
         & $executable 2>&1
         $codeRetour = $LASTEXITCODE
 
@@ -73,5 +98,7 @@ function Executer-Exemple {
         else {
             Write-Host "Code de sortie : $codeRetour" -ForegroundColor Red
         }
+
+        Write-Host ("-" * 60)
     }
 }
