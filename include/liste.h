@@ -79,6 +79,16 @@ int supprimer_element_par_pointeur(Liste *liste, void *element);
 int supprimer_element_par_index(Liste *liste, int index);
 
 /**
+ * @brief Recherche l'index de l'élément correspondant à l'adresse fournie.
+ * 
+ *
+ * @param liste La liste dans laquelle rechercher l'élément
+ * @param element L'adresse de l'élément à rechercher
+ * @return L'index de l'élément correspondant à l'adresse fournie, -1 si l'élément est introuvable, -2 si la liste est un pointeur nul
+ */
+int rechercher_index_par_adresse(Liste *liste, void *element);
+
+/**
  * @brief Recherche l'élément correspondant à l'index spécifié dans la liste.
  * 
  *
