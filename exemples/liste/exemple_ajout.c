@@ -16,6 +16,23 @@
 #include <stdlib.h>
 #include "liste.h"
 
+/* Variable globale pour le parcours avec compteur d'index */
+static int _index_courant;
+
+static void afficher_element(void *valeur)
+{
+    printf("  - element[%d] -> %d\n", _index_courant, *(int *)valeur);
+    _index_courant++;
+}
+
+static void afficher_liste(const Liste *liste, const char *titre)
+{
+    printf("%s :\n", titre);
+    _index_courant = 0;
+    parcourir_liste(liste, afficher_element);
+    printf("\n");
+}
+
 int main(void)
 {
     printf("=== Exemple 2 : ajout d'elements et recherches ===\n\n");
@@ -36,16 +53,10 @@ int main(void)
     ajouter_element(liste, &d);
     ajouter_element(liste, &e);
 
-    printf("La liste contient maintenant %d elements.\n\n", liste->taille);
+    printf("La liste contient maintenant %d elements.\n\n", taille_liste(liste));
 
-    /* Parcours simple par les pointeurs internes */
-    printf("Parcours de la liste (par chainage) :\n");
-    int index = 0;
-    for (ElementListe *el = liste->premier; el != NULL; el = el->suivant, ++index)
-    {
-        printf("  - element[%d] -> %d\n", index, *(int *)el->valeur);
-    }
-    printf("\n");
+    /* Parcours simple en utilisant la fonction generique parcourir_liste() */
+    afficher_liste(liste, "Parcours de la liste (par chainage)");
 
     /* Recherche de l'index a partir de l'adresse */
     printf("Recherche de l'index d'éléments par leur adresse :\n");
@@ -60,7 +71,7 @@ int main(void)
 
     /* Recherche d'un element a partir de son index */
     printf("Recherche d'elements par index :\n");
-    for (int i = 0; i < liste->taille; ++i)
+    for (int i = 0; i < taille_liste(liste); ++i)
     {
         int *val = (int *)rechercher_element_par_index(liste, i);
         if (val)
@@ -70,7 +81,7 @@ int main(void)
     printf("\nTest de cas limites pour rechercher_element_par_index() :\n");
     printf("  index -1 -> %p (attendu NULL)\n", rechercher_element_par_index(liste, -1));
     printf("  index %d (== taille) -> %p (attendu NULL)\n",
-           liste->taille, rechercher_element_par_index(liste, liste->taille));
+           taille_liste(liste), rechercher_element_par_index(liste, taille_liste(liste)));
 
     /* Ici les valeurs sont sur la pile, donc on ne les free pas.
        On vide simplement la liste puis on libere la structure. */

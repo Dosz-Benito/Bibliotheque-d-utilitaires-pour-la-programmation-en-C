@@ -15,22 +15,16 @@
 #ifndef LISTE_H
 #define LISTE_H
 #include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
 
-typedef struct ElementListe
-{
-    void *valeur;
-    struct ElementListe *suivant, *precedent;
-} ElementListe;
-
-typedef struct
-{
-    ElementListe *premier, *dernier;
-    int taille;
-} Liste;
+#pragma region "Structures"
+/* Types opaques : les définitions complètes se trouvent dans src/liste.c */
+typedef struct ElementListe ElementListe;
+typedef struct Liste Liste;
+#pragma endregion
 
 /* Prototypes des fonctions */
+
+#pragma region "Fonctions de base d'une liste"
 
 /**
  * @brief Crée une liste de taille_liste éléments. Chaque élément est initialisé à NULL.
@@ -41,6 +35,14 @@ typedef struct
 Liste *creer_liste(void);
 
 /**
+ * @brief Retourne la taille de la liste.
+ *
+ * @param liste La liste dont on veut connaître la taille
+ * @return La taille de la liste, -1 si la liste est un pointeur nul
+ */
+int taille_liste(const Liste *liste);
+
+/**
  * @brief Libère toute la mémoire occupée par les éléments de la liste.
  * Cette fonction libère uniquement la mémoire des éléments de la liste,
  * la mémoire utilisée par la liste elle-même doit être libérée séparément.
@@ -49,6 +51,9 @@ Liste *creer_liste(void);
  * @return La liste qui est maintenant un pointeur nul
  */
 Liste *vider_liste(Liste *liste);
+#pragma endregion
+
+#pragma region "Fonctions d'ajout"
 
 /**
  * @brief Ajoute un nouvel élément à la fin de la liste.
@@ -58,6 +63,9 @@ Liste *vider_liste(Liste *liste);
  * @return true si l'ajout a réussi, false sinon
  */
 bool ajouter_element(Liste *liste, void *element);
+#pragma endregion
+
+#pragma region "Fonctions de suppression"
 
 /**
  * @brief Trouve le premier élément de la liste qui pointe vers la même adresse qui l'élément fourni et le supprime de la liste.
@@ -77,6 +85,9 @@ int supprimer_element_par_pointeur(Liste *liste, void *element);
  * @return 0 si la suppression a réussi, 1 si l'index est invalide ou si la liste est un pointeur nul, -1 en cas d'autre erreur
  */
 int supprimer_element_par_index(Liste *liste, int index);
+#pragma endregion
+
+#pragma region "Fonctions de recherche"
 
 /**
  * @brief Recherche l'index de l'élément correspondant à l'adresse fournie.
@@ -97,4 +108,9 @@ int rechercher_index_par_adresse(Liste *liste, void *element);
  * @return L'élément à l'index spécifié, NULL si l'index est invalide ou si la liste est un pointeur nul
  */
 void * rechercher_element_par_index(Liste *liste, int index);
+#pragma endregion
+
+#pragma region "Fonctions de parcours"
+void parcourir_liste(const Liste * liste, void (*fonction_parcours)(void *valeur));
+#pragma endregion
 #endif

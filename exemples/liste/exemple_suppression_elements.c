@@ -16,16 +16,23 @@
 #include <stdlib.h>
 #include "liste.h"
 
+/* Variable globale pour le parcours avec compteur d'index */
+static int _index_courant;
+
+static void afficher_element(void *valeur)
+{
+    if (valeur)
+        printf(" %d", *(int *)valeur);
+    else
+        printf(" (NULL)");
+    _index_courant++;
+}
+
 static void afficher_liste_ints(const Liste *liste, const char *titre)
 {
-    printf("%s (taille=%d) : ", titre, liste->taille);
-    for (ElementListe *e = liste->premier; e != NULL; e = e->suivant)
-    {
-        if (e->valeur)
-            printf(" %d", *(int *)e->valeur);
-        else
-            printf(" (NULL)");
-    }
+    printf("%s (taille=%d) : ", titre, taille_liste(liste));
+    _index_courant = 0;
+    parcourir_liste(liste, afficher_element);
     printf("\n");
 }
 
@@ -36,7 +43,7 @@ int main(void)
     Liste *liste = creer_liste();
     if (!liste)
     {
-        fprintf(stderr, "Erreur : impossible de creer la liste\n");
+        fprintf_s(stderr, "Erreur : impossible de creer la liste\n");
         return EXIT_FAILURE;
     }
 
@@ -78,7 +85,7 @@ int main(void)
     printf("\nSuppression par index :\n");
     afficher_liste_ints(liste, "Etat avant suppression par index");
 
-    if (liste->taille > 0)
+    if (taille_liste(liste) > 0)
     {
         int index_a_supprimer = 0;
         rc = supprimer_element_par_index(liste, index_a_supprimer);
@@ -86,7 +93,7 @@ int main(void)
                index_a_supprimer, rc);
     }
 
-    if (liste->taille > 1)
+    if (taille_liste(liste) > 1)
     {
         int index_a_supprimer = 1; /* apres une premiere suppression */
         rc = supprimer_element_par_index(liste, index_a_supprimer);
@@ -100,8 +107,8 @@ int main(void)
     printf("\nTests d'index invalides :\n");
     rc = supprimer_element_par_index(liste, -1);
     printf("  index -1 -> %d (attendu 1)\n", rc);
-    rc = supprimer_element_par_index(liste, liste->taille);
-    printf("  index == taille (%d) -> %d (attendu 1)\n", liste->taille, rc);
+    rc = supprimer_element_par_index(liste, taille_liste(liste));
+    printf("  index == taille (%d) -> %d (attendu 1)\n", taille_liste(liste), rc);
 
     /* Nettoyage complet */
     liste = vider_liste(liste);
