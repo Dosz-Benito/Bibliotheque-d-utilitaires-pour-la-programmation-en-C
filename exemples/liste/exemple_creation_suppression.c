@@ -21,20 +21,19 @@ int main(void)
     Liste *liste = creer_liste();
     if (liste == NULL)
     {
-        fprintf(stderr, "Erreur : creer_liste() a retourne NULL\n");
+        fprintf_s(stderr, "Erreur : creer_liste() a retourne NULL\n");
         return EXIT_FAILURE;
     }
 
     printf("Liste creee : adresse=%p\n", (void *)liste);
-    printf("Etat initial -> taille=%d, premier=%p, dernier=%p (attendu : 0, NULL, NULL)\n",
-           liste->taille, (void *)liste->premier, (void *)liste->dernier);
+    printf("Etat initial -> taille=%d (attendu : 0)\n", taille_liste(liste));
 
     /* On ajoute quelques valeurs pour montrer que la liste sert vraiment a quelque chose */
     int *v1 = malloc(sizeof *v1);
     int *v2 = malloc(sizeof *v2);
     if (!v1 || !v2)
     {
-        fprintf(stderr, "Erreur d'allocation pour les valeurs\n");
+        fprintf_s(stderr, "Erreur d'allocation pour les valeurs\n");
         free(v1);
         free(v2);
         free(liste);
@@ -46,7 +45,7 @@ int main(void)
     ajouter_element(liste, v1);
     ajouter_element(liste, v2);
 
-    printf("Apres ajout de deux elements, taille=%d (attendu : 2)\n", liste->taille);
+    printf("Apres ajout de deux elements, taille=%d (attendu : 2)\n", taille_liste(liste));
 
     /* On libère les valeurs stockées (vider_liste ne libère que les noeuds) */
     free(v1);
@@ -56,8 +55,7 @@ int main(void)
        la structure Liste reste valide mais vide. */
     liste = vider_liste(liste);
 
-    printf("Apres vider_liste -> taille=%d, premier=%p, dernier=%p (attendu : 0, NULL, NULL)\n",
-           liste->taille, (void *)liste->premier, (void *)liste->dernier);
+    printf("Apres vider_liste -> taille=%d (attendu : 0)\n", taille_liste(liste));
 
     /* Enfin, on libère la structure Liste elle‑meme */
     free(liste);

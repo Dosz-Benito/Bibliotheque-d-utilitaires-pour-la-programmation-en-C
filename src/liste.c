@@ -7,7 +7,24 @@
  */
 
 #include "liste.h"
+#include <stdlib.h>
+#include <stdio.h>
 
+#pragma region "Structures"
+struct ElementListe
+{
+    void *valeur;
+    ElementListe *suivant, *precedent;
+};
+
+struct Liste
+{
+    ElementListe *premier, *dernier;
+    int taille;
+};
+#pragma endregion
+
+#pragma region "Fonctions de base d'une liste"
 Liste *creer_liste(void)
 {
     Liste *liste = malloc(sizeof(Liste));
@@ -20,6 +37,13 @@ Liste *creer_liste(void)
     liste->dernier = NULL;
     liste->taille = 0;
     return liste;
+}
+
+int taille_liste(const Liste *liste)
+{
+    if (liste == NULL)
+        return -1;
+    return liste->taille;
 }
 
 Liste *vider_liste(Liste *liste)
@@ -40,7 +64,9 @@ Liste *vider_liste(Liste *liste)
     liste->taille = 0;
     return liste;
 }
+#pragma endregion
 
+#pragma region "Fonctions d'ajout"
 bool ajouter_element(Liste *liste, void *element)
 {
     ElementListe *element_liste = malloc(sizeof(ElementListe));
@@ -69,7 +95,9 @@ bool ajouter_element(Liste *liste, void *element)
     liste->taille += 1;
     return true;
 }
+#pragma endregion
 
+#pragma region "Fonctions de suppression"
 int supprimer_element_par_pointeur(Liste *liste, void *element)
 {
     if (liste == NULL)
@@ -127,7 +155,9 @@ int supprimer_element_par_index(Liste *liste, int index)
     free(element_actuel);
     return 0;
 }
+#pragma endregion
 
+#pragma region "Fonctions de recherche"
 int rechercher_index_par_adresse(Liste *liste, void *element)
 {
     if (liste == NULL)
@@ -141,14 +171,25 @@ int rechercher_index_par_adresse(Liste *liste, void *element)
     }
     return -1;
 }
-
 void *rechercher_element_par_index(Liste *liste, int index)
 {
     if (liste == NULL || index < 0 || index >= liste->taille)
-        return NULL;
+    return NULL;
 
     int i = 0;
-    ElementListe * resultat = NULL;
-    for (resultat = liste->premier; i < index; resultat = resultat->suivant) i++;
+    ElementListe *resultat = NULL;
+    for (resultat = liste->premier; i < index; resultat = resultat->suivant)
+    i++;
     return resultat->valeur;
 }
+#pragma endregion
+
+#pragma region "Fonctions de parcours"
+void parcourir_liste(const Liste * liste, void (*fonction_parcours)(void *valeur))
+{
+    if (liste == NULL) return;
+
+    for(ElementListe * element_actuel = liste->premier; element_actuel != NULL; element_actuel = element_actuel->suivant)
+        fonction_parcours(element_actuel->valeur);
+}
+#pragma endregion
