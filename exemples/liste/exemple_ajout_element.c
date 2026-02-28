@@ -40,7 +40,7 @@ int main(void)
     Liste *liste = creer_liste();
     if (!liste)
     {
-        fprintf(stderr, "Erreur : impossible de creer la liste\n");
+        fprintf_s(stderr, "Erreur : impossible de creer la liste\n");
         return EXIT_FAILURE;
     }
 

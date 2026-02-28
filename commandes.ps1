@@ -10,22 +10,22 @@
 .PARAMETER Projet
     Nom du projet/dossier dans le répertoire exemples. Ce paramètre est obligatoire.
 
-.PARAMETER Fonction
+.PARAMETER Exemple
    Nom logique de l'exemple à exécuter (sans le préfixe \"exemple_\").
    - Si non spécifié : exécute tous les fichiers exemple_*.c du projet.
    - Si égal à \"*\"   : exécute tous les fichiers exemple_*.c du projet.
-   - Sinon           : exécute exemples/<projet>/exemple_<Fonction>.c
+   - Sinon           : exécute exemples/<projet>/exemple_<Exemple>.c
 
 .EXAMPLE
    Executer-Exemple -Projet "liste"
    Exécute tous les fichiers exemples/liste/exemple_*.c
  
 .EXAMPLE
-   Executer-Exemple -Projet "liste" -Fonction "liste_ajout"
+   Executer-Exemple -Projet "liste" -Exemple "liste_ajout"
    Exécute le fichier exemples/liste/exemple_liste_ajout.c
  
 .EXAMPLE
-   Executer-Exemple -Projet "liste" -Fonction "*"
+   Executer-Exemple -Projet "liste" -Exemple "*"
    Exécute tous les fichiers exemples/liste/exemple_*.c
 
 .NOTES
@@ -36,7 +36,7 @@ function Executer-Exemple {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory = $true)] [string] $Projet,
-        [Parameter(Mandatory = $false)] [string] $Fonction
+        [Parameter(Mandatory = $false)] [string] $Exemple
     )
 
     $repertoireExemples = Join-Path "exemples" $Projet
@@ -47,7 +47,7 @@ function Executer-Exemple {
     }
 
     # Récupération des fichiers sources d'exemple à compiler/exécuter
-    if ([string]::IsNullOrEmpty($Fonction) -or $Fonction -eq "*") {
+    if ([string]::IsNullOrEmpty($Exemple) -or $Exemple -eq "*") {
         # Tous les fichiers exemple_*.c du projet
         $fichiersExemples = Get-ChildItem -Path $repertoireExemples -Filter "exemple_*.c" -File |
                             Sort-Object Name
@@ -57,8 +57,8 @@ function Executer-Exemple {
         }
     }
     else {
-        # Un seul fichier spécifique : exemples/<projet>/exemple_<Fonction>.c
-        $fichierUnique = Join-Path $repertoireExemples ("exemple_{0}.c" -f $Fonction)
+        # Un seul fichier spécifique : exemples/<projet>/exemple_<Exemple>.c
+        $fichierUnique = Join-Path $repertoireExemples ("exemple_{0}.c" -f $Exemple)
         if (-not (Test-Path $fichierUnique)) {
             Write-Host "Fichier source introuvable : $fichierUnique" -ForegroundColor Red
             return 2
