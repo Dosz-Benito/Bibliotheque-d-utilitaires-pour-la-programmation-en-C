@@ -64,6 +64,13 @@ Liste *vider_liste(Liste *liste)
     liste->taille = 0;
     return liste;
 }
+
+bool liste_vide(Liste *liste)
+{
+    if (liste == NULL)
+        return -1;
+    return liste->taille == 0;
+}
 #pragma endregion
 
 #pragma region "Fonctions d'ajout"

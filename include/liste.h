@@ -51,6 +51,15 @@ int taille_liste(const Liste *liste);
  * @return La liste qui est maintenant un pointeur nul
  */
 Liste *vider_liste(Liste *liste);
+
+/**
+ * @brief Vérifie si la liste est vide ou non.
+ * 
+ *
+ * @param liste La liste à considérer
+ * @return -1 si la liste est un pointeur nul, true si la liste est vide, false sinon
+ */
+bool liste_vide(Liste *liste);
 #pragma endregion
 
 #pragma region "Fonctions d'ajout"

@@ -55,7 +55,7 @@ int main(void)
        la structure Liste reste valide mais vide. */
     liste = vider_liste(liste);
 
-    printf("Apres vider_liste -> taille=%d (attendu : 0)\n", taille_liste(liste));
+    printf("Apres vider_liste, %s)\n", liste_vide(liste) ? "La liste est vide" : "La liste n'est pas vide");
 
     /* Enfin, on libère la structure Liste elle‑meme */
     free(liste);
