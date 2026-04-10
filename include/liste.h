@@ -72,6 +72,28 @@ bool liste_vide(Liste *liste);
  * @return true si l'ajout a réussi, false sinon
  */
 bool ajouter_element(Liste *liste, void *element);
+
+/**
+ * @brief Insère un nouvel élément avant la position `indice`.
+ *
+ * Règles d'index :
+ * - `indice` dans \[0..taille\] est valide.
+ *   - `indice == 0` : insertion en début (devient le premier)
+ *   - `0 < indice < taille` : insertion au milieu (avant l'élément existant à cet index)
+ *   - `indice == taille` : insertion en fin (après le dernier)
+ *
+ * Codes de retour :
+ * - 0 : succès
+ * - 1 : indice invalide
+ * - -1 : liste NULL
+ * - -2 : échec d'allocation mémoire
+ *
+ * @param liste La liste à modifier
+ * @param indice Position d'insertion (voir règles ci-dessus)
+ * @param element Pointeur vers la donnée à stocker (non copié, stocké tel quel)
+ * @return int Code de retour (voir ci-dessus)
+ */
+int inserer_avant(Liste *liste, int indice, void *element);
 #pragma endregion
 
 #pragma region "Fonctions de suppression"

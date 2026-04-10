@@ -1,4 +1,4 @@
-/**
+fix(liste): correction of bugs dans la fonction inserer_avant
  * @file liste.c
  * @author do SANTOS ZOUNON Bénito K. (dosantosbenito81@gmail.com)
  * @brief Implémentation complète d'une liste chaînée d'objets génériques en C selon le modèle FILO.
@@ -102,6 +102,68 @@ bool ajouter_element(Liste *liste, void *element)
     liste->taille += 1;
     return true;
 }
+
+int inserer_avant(Liste *liste, int indice, void *element)
+{
+    if (liste == NULL)
+        return -1;
+
+    if (indice < 0 || indice > liste->taille)
+        return 1;
+
+    ElementListe *nouveau = malloc(sizeof(*nouveau));
+    if (nouveau == NULL)
+    {
+        perror("Erreur d'allocation de mémoire");
+        return -2;
+    }
+
+    nouveau->valeur = element;
+    nouveau->precedent = NULL;
+    nouveau->suivant = NULL;
+
+    /* Cas 1 : liste vide (donc indice == 0) */
+    if (liste->taille == 0)
+    {
+        liste->premier = liste->dernier = nouveau;
+        liste->taille = 1;
+        return 0;
+    }
+
+    /* Cas 2 : insertion en début (avant l'actuel premier) */
+    if (indice == 0)
+    {
+        nouveau->suivant = liste->premier;
+        liste->premier->precedent = nouveau;
+        liste->premier = nouveau;
+        liste->taille += 1;
+        return 0;
+    }
+
+    /* Cas 3 : insertion en fin (après le dernier) */
+    if (indice == liste->taille)
+    {
+        nouveau->precedent = liste->dernier;
+        liste->dernier->suivant = nouveau;
+        liste->dernier = nouveau;
+        liste->taille += 1;
+        return 0;
+    }
+
+    /* Cas 4 : insertion au milieu (avant l'élément à l'index `indice`) */
+    ElementListe *actuel = liste->premier;
+    for (int i = 0; i < indice; i++)
+        actuel = actuel->suivant;
+
+    /* À ce stade, actuel pointe l'élément existant à l'index `indice`. */
+    nouveau->suivant = actuel;
+    nouveau->precedent = actuel->precedent;
+    actuel->precedent->suivant = nouveau;
+    actuel->precedent = nouveau;
+
+    liste->taille += 1;
+    return 0;
+}
 #pragma endregion
 
 #pragma region "Fonctions de suppression"
@@ -181,22 +243,23 @@ int rechercher_index_par_adresse(Liste *liste, void *element)
 void *rechercher_element_par_index(Liste *liste, int index)
 {
     if (liste == NULL || index < 0 || index >= liste->taille)
-    return NULL;
+        return NULL;
 
     int i = 0;
     ElementListe *resultat = NULL;
     for (resultat = liste->premier; i < index; resultat = resultat->suivant)
-    i++;
+        i++;
     return resultat->valeur;
 }
 #pragma endregion
 
 #pragma region "Fonctions de parcours"
-void parcourir_liste(const Liste * liste, void (*fonction_parcours)(void *valeur))
+void parcourir_liste(const Liste *liste, void (*fonction_parcours)(void *valeur))
 {
-    if (liste == NULL) return;
+    if (liste == NULL)
+        return;
 
-    for(ElementListe * element_actuel = liste->premier; element_actuel != NULL; element_actuel = element_actuel->suivant)
+    for (ElementListe *element_actuel = liste->premier; element_actuel != NULL; element_actuel = element_actuel->suivant)
         fonction_parcours(element_actuel->valeur);
 }
 #pragma endregion
